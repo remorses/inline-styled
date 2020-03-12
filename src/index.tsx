@@ -1,31 +1,21 @@
 import styled, { CSSObject } from '@emotion/styled'
 import { FC } from 'react'
 import { system, ConfigStyle } from 'styled-system'
-import { margin, padding } from './space'
 import { PropertyRegexConfig } from './types'
+import { flexbox } from './flexbox'
+import { layout } from './layout'
+import { borders } from './borders'
+import { sizes } from './sizes'
+import { margin, padding, position } from './space'
+import { fonts } from './fonts'
+import { colors } from './colors'
+import { shadows } from './shadows'
 
 // restrictions:
 // - cannot use _ in themed properties
 // - maybe properties does not preserve order
 // -
 
-function getBackgroundStyles(key, theme): CSSObject {
-    const rgx = /bg_([^_]+)_?(\w*)/ // optional _ make the first part take the _ after
-    const res = rgx.exec(key)
-    if (!res) {
-        return {}
-    }
-    const [_, color, level] = [...res]
-    console.log({ color, level })
-    let backgroundColor = theme.colors[color]
-    console.log(backgroundColor)
-    if (backgroundColor?.[level]) {
-        backgroundColor = backgroundColor?.[level]
-    }
-    return {
-        backgroundColor,
-    }
-}
 
 export const get = (obj, key: string[]) => {
     if (!key || !key.length) {
@@ -46,19 +36,20 @@ function generalRegexToStyle({
     cssProperties = undefined,
     defaultValue = undefined,
 }) {
+    accessorString = accessorString || ''
     const res = regex.exec(key)
     if (!res) {
         return {}
     }
-    const value = res[1]
+    const value = res[1] || ''
     // if (!value) {
     //     return {}
     // }
     const accessor = [...accessorString.split('.'), ...value.split('_')]
     const cssValue = get(theme, accessor) || value || defaultValue
-    console.log({
-        cssValue,
-    })
+    // console.log({
+    //     cssValue,
+    // })
     if (cssProperty) {
         return {
             [cssProperty]: cssValue,
@@ -76,17 +67,20 @@ function generalRegexToStyle({
 
 const regexMap: PropertyRegexConfig[] = [
     {
-        regex: /bg_(\w+)/,
-        accessor: 'colors',
-        cssProperty: 'backgroundColor',
-    },
-    {
         regex: /opacity_(\w+)/,
         accessor: '',
         cssProperty: 'opacity',
     },
     ...margin,
     ...padding,
+    ...flexbox,
+    ...position,
+    ...layout,
+    ...borders,
+    ...sizes,
+    ...fonts,
+    ...colors,
+    ...shadows,
 ]
 
 const getStyle = (key, theme) => {
@@ -95,7 +89,6 @@ const getStyle = (key, theme) => {
     })
     if (found) {
         const { regex } = found
-        console.log('found ' + regex)
         return generalRegexToStyle({
             theme,
             key,
@@ -114,23 +107,19 @@ const breakpointsMap: [RegExp, string][] = [
 const createMediaQuery = (n) => `@media screen and (min-width: ${n})`
 
 const fun = (props): CSSObject => {
-    console.log(props)
     const styles = {}
-    console.log(props)
 
     Object.keys(props).forEach((k: string) => {
-        console.log({ k })
         const breakpointFound = breakpointsMap.find(([regex, breakpoint]) => {
             return k.match(regex)
         })
         if (!breakpointFound) {
-            console.log('no breakpointFound')
+            // console.log('no breakpointFound')
             Object.assign(styles, getStyle(k, props.theme))
             return
         }
         const [regex, breakpoint] = breakpointFound
         const newKey = k.replace(regex, '$1')
-        console.log({ newKey })
         const style = getStyle(newKey, props.theme)
         const breakpointWidth = props.theme?.breakpoints?.[breakpoint]
         if (!breakpointWidth) {
@@ -139,7 +128,6 @@ const fun = (props): CSSObject => {
             return
         }
         const media = createMediaQuery(breakpointWidth)
-        console.log({ media })
         Object.assign(styles, {
             [media]: Object.assign({}, styles[media] || {}, style),
         })
@@ -158,7 +146,7 @@ interface BackgroundProps {
 
 type Properties = BackgroundProps
 
-export const Div: FC<Properties> = styled.div({}, fun)
+export const Div: FC<any> = styled.div({}, fun)
 
 // testing
 
@@ -167,7 +155,7 @@ function makeSystemObj(): any {
     const conf: ConfigStyle = {
         property: 'background',
         transform: (val, scale) => {
-            console.log({ val, scale })
+            // console.log({ val, scale })
             return val
         },
         scale: 'colors',

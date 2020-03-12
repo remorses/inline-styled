@@ -18,4 +18,9 @@ export const borders: PropertyRegexConfig[] = [
         accessor: ACCESSOR,
         cssProperty: 'borderRadius',
     },
+    {
+        regex: /border_style_(\w+)/,
+        accessor: ACCESSOR,
+        cssProperty: 'borderStyle',
+    },
 ]

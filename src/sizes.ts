@@ -2,7 +2,7 @@ import { PropertyRegexConfig } from './types'
 
 const ACCESSOR = 'sizes'
 
-export const borders: PropertyRegexConfig[] = [
+export const sizes: PropertyRegexConfig[] = [
     {
         regex: /width_(\w+)/,
         accessor: ACCESSOR,

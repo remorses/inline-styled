@@ -2,7 +2,7 @@ import { PropertyRegexConfig } from './types'
 
 const ACCESSOR = ''
 
-export const borders: PropertyRegexConfig[] = [
+export const layout: PropertyRegexConfig[] = [
     {
         regex: /display_(\w+)/,
         accessor: ACCESSOR,
@@ -18,6 +18,4 @@ export const borders: PropertyRegexConfig[] = [
         accessor: ACCESSOR,
         cssProperty: 'overflow',
     },
-
-    
 ]

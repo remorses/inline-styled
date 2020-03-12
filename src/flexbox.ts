@@ -32,4 +32,36 @@ export const flexbox: PropertyRegexConfig[] = [
         cssProperties: ['display', 'flexWrap'],
         defaultValue: ['flex', 'wrap'],
     },
+    {
+        regex: /flex_no_wrap/,
+        accessor: ACCESSOR,
+        cssProperties: ['display', 'flexWrap'],
+        defaultValue: ['flex', 'nowrap'],
+    },
+    {
+        regex: /items_(\w+)/,
+        accessor: 'items',
+        cssProperty: 'alignItems',
+    },
+    {
+        regex: /jsutify_(\w+)/,
+        accessor: 'items',
+        cssProperty: 'justifyContent',
+    },
+    {
+        regex: /jsutify_(\w+)/,
+        accessor: 'items',
+        cssProperty: 'justifyContent',
+    },
+    {
+        regex: /self_(\w+)/,
+        accessor: 'items',
+        cssProperty: 'alignSelf',
+    },
+    {
+        regex: /content_(\w+)/,
+        accessor: 'items',
+        cssProperty: 'alignContent',
+    },
+
 ]

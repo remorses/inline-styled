@@ -3,12 +3,27 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Div, Link } from '../src'
 
+const arr = Array(1000).fill(0)
+
 const App = () => {
     return (
         <ThemeProvider>
-            <Div bg_green_800 bg_red_800>
-                sdfasdfasdf
-            </Div>
+            {arr.map((_, i) => (
+                <Div
+                    key={i}
+                    position_absolute
+                    bg_green_800
+                    width_64
+                    height_64
+                    border_color_red
+                    border_width_1px
+                    border_style_solid
+                    shadow_lg
+                >
+                    sdfasdfasdf
+                </Div>
+                // <div key={i}/>
+            ))}
             <Link bg_green>sdfasdfadsf</Link>
         </ThemeProvider>
     )
