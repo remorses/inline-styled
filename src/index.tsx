@@ -1,13 +1,13 @@
 import styled, { CSSObject } from '@emotion/styled'
 import { FC } from 'react'
-
+import { system, ConfigStyle } from 'styled-system'
+import { margin, padding } from './space'
+import { PropertyRegexConfig } from './types'
 
 // restrictions:
 // - cannot use _ in themed properties
 // - maybe properties does not preserve order
-// - 
-
-
+// -
 
 function getBackgroundStyles(key, theme): CSSObject {
     const rgx = /bg_([^_]+)_?(\w*)/ // optional _ make the first part take the _ after
@@ -27,16 +27,80 @@ function getBackgroundStyles(key, theme): CSSObject {
     }
 }
 
-const regexMap: [RegExp, Function][] = [[/bg_\w*/, getBackgroundStyles]]
+export const get = (obj, key: string[]) => {
+    if (!key || !key.length) {
+        return undefined
+    }
+    for (let p = 0; p < key.length; p++) {
+        obj = obj ? obj[key[p]] : undefined
+    }
+    return obj
+}
 
-const getStyle = (k, theme) => {
-    const found = regexMap.find(([regex, func]) => {
-        return k.match(regex)
+function generalRegexToStyle({
+    regex,
+    key,
+    theme,
+    accessor: accessorString = '',
+    cssProperty = undefined,
+    cssProperties = undefined,
+    defaultValue = undefined,
+}) {
+    const res = regex.exec(key)
+    if (!res) {
+        return {}
+    }
+    const value = res[1]
+    // if (!value) {
+    //     return {}
+    // }
+    const accessor = [...accessorString.split('.'), ...value.split('_')]
+    const cssValue = get(theme, accessor) || value || defaultValue
+    console.log({
+        cssValue,
+    })
+    if (cssProperty) {
+        return {
+            [cssProperty]: cssValue,
+        }
+    }
+    if (cssProperties) {
+        return Object.assign(
+            {},
+            ...Object.keys(cssProperties).map((k) => ({
+                [k]: cssValue,
+            })),
+        )
+    }
+}
+
+const regexMap: PropertyRegexConfig[] = [
+    {
+        regex: /bg_(\w+)/,
+        accessor: 'colors',
+        cssProperty: 'backgroundColor',
+    },
+    {
+        regex: /opacity_(\w+)/,
+        accessor: '',
+        cssProperty: 'opacity',
+    },
+    ...margin,
+    ...padding,
+]
+
+const getStyle = (key, theme) => {
+    const found = regexMap.find(({ regex }) => {
+        return key.match(regex)
     })
     if (found) {
-        const [regex, func] = found
+        const { regex } = found
         console.log('found ' + regex)
-        return func(k, theme)
+        return generalRegexToStyle({
+            theme,
+            key,
+            ...found,
+        })
     }
     return {}
 }
@@ -95,3 +159,24 @@ interface BackgroundProps {
 type Properties = BackgroundProps
 
 export const Div: FC<Properties> = styled.div({}, fun)
+
+// testing
+
+function makeSystemObj(): any {
+    const obj = {}
+    const conf: ConfigStyle = {
+        property: 'background',
+        transform: (val, scale) => {
+            console.log({ val, scale })
+            return val
+        },
+        scale: 'colors',
+    }
+    obj['bg_blue'] = conf
+    obj['bg_green'] = conf
+    return obj
+}
+
+export const Link = styled.a`
+    ${system(makeSystemObj())}
+`
