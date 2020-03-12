@@ -14,7 +14,7 @@ jobs:
               with:
                   node-version: 12
                   registry-url: https://registry.npmjs.org/
-            - run: yarn
+            - run: npm ci
             - run: yarn test
             - run: tsc
             - run: tsc -m es6 --outDir esm

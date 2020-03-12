@@ -23,10 +23,22 @@
     "author": "Tommaso De Rossi, morse <beats.by.morse@gmail.com>",
     "license": "ISC",
     "devDependencies": {
+        "@emotion/core": "^10.0.28",
+        "@emotion/styled": "^10.0.27",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.0.7",
+        "@types/react": "^16.9.23",
         "mocha": "^6.1.4",
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0",
         "ts-node": "^8.2.0",
         "typescript": "^3.7.5"
+    },
+    "dependencies": {
+        "@chakra-ui/core": "^0.6.1",
+        "@types/styled-system": "^5.1.9",
+        "emotion-theming": "^10.0.27",
+        "string.prototype.matchall": "^4.0.2",
+        "styled-system": "^5.1.5"
     }
 }
